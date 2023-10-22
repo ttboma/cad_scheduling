@@ -21,6 +21,15 @@ impl<'a> From<Vec<Format<'a>>> for Blif<'a> {
     }
 }
 
+impl Blif<'_> {
+    pub fn iter_logic_gates(&self) -> impl Iterator<Item = &LogicGate<'_>> {
+        self.commands.iter().filter_map(|c| match c {
+            Command::LogicGate(g) => Some(g),
+            _ => None,
+        })
+    }
+}
+
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub enum Format<'a> {
     Command(Command<'a>),

@@ -1,4 +1,5 @@
 use crate::*;
+
 pub fn ws<'a, F: 'a, O, E: ParseError<&'a str>>(
     parser: F,
 ) -> impl FnMut(&'a str) -> IResult<&'a str, O, E>

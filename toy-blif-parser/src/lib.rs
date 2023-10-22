@@ -28,7 +28,7 @@
 //! end               -> END_PRAGMA EOL
 //!
 //! logic_gate        -> NAME_PRAGMA decl_output EOL (output EOL)*
-//!                    | NAME_PRAGMA decl_inout EOL (input)+ SPACE output EOL
+//!                    | NAME_PRAGMA decl_inout EOL ((input)+ SPACE output EOL)+
 //! ```
 //!
 //! ## Usage Example
