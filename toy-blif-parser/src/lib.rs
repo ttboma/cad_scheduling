@@ -71,8 +71,10 @@ use nom::{
 };
 
 /// Toy parser for BLIF file
-pub fn parser(s: &str) -> IResult<&str, Blif, VerboseError<&str>> {
-    blif(s)
+pub fn parser<'a, T: AsRef<str> + 'a>(
+    s: &'a T,
+) -> IResult<&'a str, Blif<'a>, VerboseError<&'a str>> {
+    blif(s.as_ref())
 }
 
 pub mod keyword;
