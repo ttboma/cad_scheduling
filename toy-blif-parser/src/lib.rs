@@ -56,7 +56,7 @@
 //!     1 1
 //!     .end
 //!     "#;
-//! let (s, data) = parser(input).unwrap();
+//! let (s, data) = parser(&input).unwrap();
 //! ```
 
 use nom::{
