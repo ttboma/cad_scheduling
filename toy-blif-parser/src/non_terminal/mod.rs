@@ -75,8 +75,30 @@ mod tests {
             1 1
             .end
             "#;
-        let (s, data) = blif(input).unwrap();
-        println!("{:#?}", s);
-        println!("{:#?}", data);
+        let _ = blif(input).unwrap();
+    }
+
+    #[test]
+    fn test_blif2() {
+        let input = r#"
+            .model sample01
+            .inputs a b c d e
+            .outputs h j
+            .names b c d f
+            101 1
+            .names b c d g
+            11- 1
+            --1 1
+            .names a f h
+            1- 1
+            -0 1
+            .names e f g i
+            110 1
+            001 1
+            .names i j
+            0 1
+            .end
+        "#;
+        let _ = blif(input).unwrap();
     }
 }

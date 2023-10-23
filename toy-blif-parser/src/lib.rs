@@ -34,6 +34,7 @@
 //! ## Usage Example
 //!
 //! [`parser`] is provided to parse a BLIF file.
+//! We also provide a simple data structure [`CircuitGraph`] and [`From<Blif<'a>>`] trait.
 //!
 //! ```
 //! use toy_blif_parser::parser;
@@ -56,7 +57,8 @@
 //!     1 1
 //!     .end
 //!     "#;
-//! let (s, data) = parser(&input).unwrap();
+//! let (_, data) = parser(&input).unwrap();
+//! let graph = CircuitGraph::from(data);
 //! ```
 
 use nom::{
@@ -69,6 +71,7 @@ use nom::{
     sequence::{pair, separated_pair, terminated, tuple},
     IResult,
 };
+use std::collections::HashMap;
 
 /// Toy parser for BLIF file
 pub fn parser<'a, T: AsRef<str> + 'a>(
@@ -77,9 +80,11 @@ pub fn parser<'a, T: AsRef<str> + 'a>(
     blif(s.as_ref())
 }
 
+pub mod circuit_graph;
 pub mod keyword;
 pub mod non_terminal;
 pub mod terminal;
+pub use circuit_graph::*;
 use keyword::*;
 use non_terminal::*;
 use terminal::*;

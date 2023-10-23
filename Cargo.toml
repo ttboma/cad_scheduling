@@ -1,5 +1,5 @@
 [workspace]
 
 members = [
-    "toy-blif-parser", "circuit-graph"
+    "toy-blif-parser"
 ]

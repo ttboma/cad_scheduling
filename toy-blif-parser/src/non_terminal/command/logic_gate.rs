@@ -18,7 +18,10 @@ fn n_input_1_output_logic_gate(s: &str) -> IResult<&str, LogicGate, VerboseError
     let (s, pragma) = pragma(NAMES)(s)?;
     let (s, decl_in_out) = terminated(many1(identifier), eol)(s)?;
     let (s, in_out) = map(
-        many1(separated_pair(many1(signal), tag(" "), signal)),
+        many1(terminated(
+            separated_pair(many1(signal), tag(" "), signal),
+            eol,
+        )),
         |in_out| {
             in_out
                 .into_iter()
