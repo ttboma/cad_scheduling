@@ -37,7 +37,7 @@
 //! We also provide a simple data structure [`CircuitGraph`] and [`From<Blif<'a>>`] trait.
 //!
 //! ```
-//! use toy_blif_parser::parser;
+//! use toy_blif_parser::{parser, CircuitGraph};
 //!
 //! let input = r#"
 //!     .model top
