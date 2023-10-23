@@ -60,6 +60,12 @@
 //! let (_, data) = parser(&input).unwrap();
 //! let graph = CircuitGraph::from(data);
 //! ```
+//!
+//! Or user can use interactive program `blif_parser` from your shell
+//!
+//! ```sh
+//! cargo run --bin blif_parser -- toy-blif-parser/tests/samples/sample01.blif
+//! ```
 
 use nom::{
     branch::alt,
