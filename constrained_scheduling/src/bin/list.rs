@@ -35,6 +35,6 @@ fn run_ml_rcs(args: &[OsString]) -> io::Result<()> {
     println!("#AND: {}", and_constraint);
     println!("#OR: {}", or_constraint);
     println!("#NOT: {}", not_constraint);
-    println!("#END");
+    println!("END");
     Ok(())
 }
