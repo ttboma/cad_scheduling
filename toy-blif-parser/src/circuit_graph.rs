@@ -2,8 +2,8 @@ use super::*;
 
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct CircuitGraph {
-    pub input_pins: Vec<String>,
-    pub output_pins: Vec<String>,
+    pub input_nodes: Vec<String>,
+    pub gate_nodes: Vec<String>,
     pub nodes: HashMap<String, CircuitNode>,
 }
 
@@ -22,8 +22,7 @@ impl<'a> From<Blif<'a>> for CircuitGraph {
         .set_all_predecessors()
         .set_all_successors()
         .set_logic()
-        .set_input_pins()
-        .set_output_pins()
+        .categorize_nodes()
         .build()
     }
 }
@@ -77,19 +76,12 @@ impl<'a> CircuitGraphBuilder<'a> {
         self
     }
 
-    fn set_input_pins(mut self) -> Self {
+    fn categorize_nodes(mut self) -> Self {
         for node in &self.graph.nodes {
             if node.1.predecessor.is_empty() {
-                self.graph.input_pins.push(node.0.clone());
-            }
-        }
-        self
-    }
-
-    fn set_output_pins(mut self) -> Self {
-        for node in &self.graph.nodes {
-            if node.1.successor.is_empty() {
-                self.graph.output_pins.push(node.0.clone());
+                self.graph.input_nodes.push(node.0.clone());
+            } else {
+                self.graph.gate_nodes.push(node.0.clone());
             }
         }
         self
@@ -102,9 +94,9 @@ impl<'a> CircuitGraphBuilder<'a> {
 
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct CircuitNode {
-    pub pla_logic: PLAGate,
     pub predecessor: Vec<String>,
     pub successor: Vec<String>,
+    pla_logic: PLAGate,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
@@ -113,32 +105,36 @@ pub struct PLAGate {
     pub or_pins: Vec<AndGate>,
 }
 
-impl PLAGate {
+impl CircuitNode {
     pub fn is_and_gate(&self) -> bool {
-        self.nor_pins.is_empty()
-            && self.or_pins.len() == 1
-            && self.or_pins[0].inverted_pins.is_empty()
+        self.pla_logic.nor_pins.is_empty()
+            && self.pla_logic.or_pins.len() == 1
+            && self.pla_logic.or_pins[0].inverted_pins.is_empty()
     }
 
     pub fn is_or_gate(&self) -> bool {
-        self.nor_pins.is_empty()
+        self.pla_logic.nor_pins.is_empty()
+            && !self.pla_logic.or_pins.is_empty()
             && self
+                .pla_logic
                 .or_pins
                 .iter()
                 .all(|g| g.pins.len() == 1 && g.inverted_pins.is_empty())
     }
 
     pub fn is_not_gate(&self) -> bool {
-        (self.nor_pins.is_empty()
-            && self.or_pins.len() == 1
-            && self.or_pins[0].pins.is_empty()
-            && self.or_pins[0].inverted_pins.len() == 1)
-            || (self.or_pins.is_empty()
-                && self.nor_pins.len() == 1
-                && self.nor_pins[0].pins.len() == 1
-                && self.nor_pins[0].inverted_pins.is_empty())
+        (self.pla_logic.nor_pins.is_empty()
+            && self.pla_logic.or_pins.len() == 1
+            && self.pla_logic.or_pins[0].pins.is_empty()
+            && self.pla_logic.or_pins[0].inverted_pins.len() == 1)
+            || (self.pla_logic.or_pins.is_empty()
+                && self.pla_logic.nor_pins.len() == 1
+                && self.pla_logic.nor_pins[0].pins.len() == 1
+                && self.pla_logic.nor_pins[0].inverted_pins.is_empty())
     }
+}
 
+impl PLAGate {
     pub fn add_pla_logic(&mut self, logic_gate: &LogicGate) {
         for product in &logic_gate.in_out {
             let mut g = AndGate::default();

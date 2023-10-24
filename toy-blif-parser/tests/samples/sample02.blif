@@ -1,7 +1,8 @@
 .model sample02
 .inputs a b c d e f
 .outputs o p q
-.names a d g 1- 1
+.names a d g
+1- 1
 -1 1
 .names a c h
 11 1
